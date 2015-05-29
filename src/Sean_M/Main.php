@@ -34,6 +34,9 @@ class Main extends PluginBase implements Listener{
     case EntityDamageEvent::CAUSE_SUICIDE:
       $text = "You died!"
       break;
+    case EntityDamageEvent::CAUSE_SUFFOCATION: 
+      $text = "You suffocated in a wall!"
+      break;
     case EntityDamageEvent::CAUSE_CONTACT:
 	if($cause instanceof EntityDamageByBlockEvent){
 	        if($cause->getDamager()->getId() === Block::CACTUS){
@@ -63,6 +66,18 @@ class Main extends PluginBase implements Listener{
                         $params[] = "Unknown";
 		}
 	}
-	break;			
+	break;
+    case EntityDamageEvent::CAUSE_BLOCK_EXPLOSION:
+    case EntityDamageEvent::CAUSE_ENTITY_EXPLOSION:
+		if($cause instanceof EntityDamageByEntityEvent){
+		$e = $cause->getDamager();
+			if($e instanceof Living){
+				$text = "You were blown up by $params[]!";
+				$params[] = $e->getName();
+			}
+		}else{
+		$text = "You blew up!";
+	}
+	break;	
   }
   if(isset($text)) $p->sendPopup($text);
